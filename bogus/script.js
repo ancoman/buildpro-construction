@@ -45,7 +45,7 @@ const defaultData = {
     heroDescription: "Reliable construction services for homes and businesses.",
     heroBackground:
       "https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=1600&auto=format&fit=crop",
-    whoTitle: "Who We Are",
+    whoTitle: "Team",
     whoText:
       "We are a dedicated construction team focused on quality delivery, safety, and customer satisfaction in every project.",
     whoSectionImage: PLACEHOLDER,
@@ -55,7 +55,7 @@ const defaultData = {
     servicesAboutText:
       "We specialize in steel-frame and large-scale construction projects that demand precision, safety, and long-term durability. From industrial halls to commercial buildings, our team manages every phase — design coordination, structural assembly, and final delivery — with clear communication and reliable timelines.\n\nWhether you are expanding operations or starting a new facility, we provide practical solutions tailored to your site, budget, and goals.",
     servicesAboutImage: "assets/services-feature.png",
-    projectsTitle: "Recent Projects",
+    projectsTitle: "Projects",
     aboutTitle: "About Us",
     aboutText:
       "We are a trusted construction company with years of experience delivering quality projects on time and within budget.",
@@ -794,7 +794,7 @@ function renderTeamScreen() {
   const whoImg = c.whoSectionImage || d.whoSectionImage || PLACEHOLDER;
 
   document.getElementById("team-screen-who-title").textContent =
-    c.whoTitle || d.whoTitle || "Who We Are";
+    c.whoTitle || d.whoTitle || "Team";
   document.getElementById("team-screen-image").src = whoImg;
   document.getElementById("team-screen-image").alt = c.whoTitle || d.whoTitle || "Team";
   document.getElementById("team-screen-text").innerHTML = formatAboutText(c.whoText || d.whoText || "");
@@ -815,7 +815,7 @@ function renderTeamScreen() {
 function renderTeamPreview() {
   const c = siteData.content;
   const d = defaultData.content;
-  const whoTitle = c.whoTitle || d.whoTitle || "Who We Are";
+  const whoTitle = c.whoTitle || d.whoTitle || "Team";
   const whoText = c.whoText || d.whoText || "";
   const whoImg = c.whoSectionImage || d.whoSectionImage || PLACEHOLDER;
 
