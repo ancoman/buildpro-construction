@@ -1051,14 +1051,95 @@ button.hero-btn {
   padding: 0 15px 15px;
 }
 
-.projects .gallery {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 48px 40px;
+/* ── Project Category Cards ── */
+.project-categories {
+  display: flex;
+  flex-direction: row;
+  gap: clamp(16px, 2.5vw, 28px);
   width: 100%;
-  max-width: none;
-  margin: 40px 0 0;
-  align-items: stretch;
+  margin: 32px 0 48px;
+}
+
+.project-cat-card {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+  text-decoration: none;
+  cursor: pointer;
+  background: #1a2b4a;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 4px 16px rgba(26, 43, 74, 0.1);
+}
+
+.project-cat-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 20px 56px rgba(26, 43, 74, 0.25);
+}
+
+.project-cat-card-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.project-cat-card-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.project-cat-card:hover .project-cat-card-img {
+  transform: scale(1.05);
+}
+
+.project-cat-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.18);
+  transition: background 0.25s ease;
+}
+
+.project-cat-card:hover .project-cat-card-overlay {
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.project-cat-card-label {
+  display: block;
+  padding: 14px 16px;
+  color: #fff;
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+  font-weight: 700;
+  text-align: center;
+  letter-spacing: 0.03em;
+  line-height: 1.3;
+  background: #1a2b4a;
+  transition: background 0.2s ease;
+}
+
+.project-cat-card:hover .project-cat-card-label {
+  background: #12294a;
+}
+
+@media (max-width: 640px) {
+  .project-categories {
+    flex-direction: column;
+  }
+  .project-cat-card {
+    flex: none;
+    width: 100%;
+  }
+}
+
+.projects .gallery {
+  display: none;
 }
 
 .who-split {

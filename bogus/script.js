@@ -2915,6 +2915,12 @@ function loadData() {
     if (merged.content.servicesTitle === "Our Services") {
       merged.content.servicesTitle = "Services";
     }
+    if (merged.content.projectsTitle === "Recent Projects") {
+      merged.content.projectsTitle = "Projects";
+    }
+    if (merged.content.whoTitle === "Who We Are") {
+      merged.content.whoTitle = "Team";
+    }
     merged.role = "public";
     if (sessionStorage.getItem(ADMIN_SESSION_KEY) === "true") {
       merged.role = "admin";
