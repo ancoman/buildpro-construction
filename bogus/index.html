@@ -14,8 +14,8 @@
       <ul class="nav-menu">
         <li class="nav-item nav-item--logo">
           <a href="#home" class="logo-brand nav-logo-link" id="site-logo-link" aria-label="Home">
-            <span class="logo-brand-visual" id="site-logo-visual">
-              <img id="site-logo-image" class="logo-brand-image" alt="" hidden />
+            <span class="logo-brand-visual has-logo-image" id="site-logo-visual">
+              <img id="site-logo-image" class="logo-brand-image" src="assets/steel-hall-mark-light.svg" alt="" />
               <span id="site-logo-text" class="logo-brand-text">BuildPro Construction</span>
             </span>
           </a>
@@ -248,44 +248,41 @@
 <section class="team-preview" id="team">
   <div class="section-head-row">
     <h2 id="team-preview-who-title">Team</h2>
-    <div class="section-toolbar" data-admin-only>
-      <button type="button" class="btn-edit" data-edit-panel="team-preview-admin">Edit intro</button>
-      <button type="button" class="btn-add" id="add-person-btn-main">+ Add person</button>
+    <div class="section-toolbar" data-admin-only><button type="button" class="btn-edit" data-edit-panel="team-preview-admin">Edit team</button></div>
+  </div>
+  <div class="team-group-layout">
+    <div class="team-photo-slot">
+    <img id="team-preview-image" alt="Our team together" hidden />
+    <div class="team-photo-empty" id="team-preview-image-empty">
+      <span class="team-photo-empty-title">Team photo</span>
+      <span>A group photo will be added here.</span>
+      <button type="button" class="btn-edit" data-admin-only data-edit-panel="team-preview-admin">Add team photo</button>
     </div>
   </div>
-  <div class="team-preview-split">
-    <div class="team-preview-media">
-      <img id="team-preview-image" src="" alt="" />
-      <span class="team-preview-hint">Click photo to meet the team</span>
-    </div>
-    <div class="team-preview-content">
+    <div class="team-group-description">
       <div id="team-preview-text" class="who-split-text"></div>
-      <button type="button" class="hero-btn hero-btn-primary team-preview-cta" id="team-preview-open">
-        Meet the Team &rarr;
-      </button>
+      <button type="button" class="hero-btn hero-btn-primary team-preview-cta" id="team-preview-open">About our team</button>
     </div>
   </div>
   <div id="team-preview-admin" class="admin-panel section-admin" data-admin-only>
-    <h3>Edit team intro (photo + text)</h3>
-    <label>Section title</label>
-    <input id="team-preview-title-input" type="text" />
-    <label>Text content (right side)</label>
-    <textarea id="team-preview-text-input" rows="8"></textarea>
-    <div class="image-editor" data-image-editor>
-      <label class="image-editor-label">Photo (left side)</label>
-      <button type="button" class="image-editor-preview-wrap" aria-label="Replace section photo">
-        <img class="image-editor-preview" id="team-preview-photo-preview" alt="" />
-        <span class="image-editor-overlay"><span>Click to replace</span></span>
+    <h3>Edit team photo and description</h3>
+    <label for="team-preview-title-input">Section title</label><input id="team-preview-title-input" type="text" />
+    <label for="team-preview-text-input">Description of the whole team</label><textarea id="team-preview-text-input" rows="8"></textarea>
+    <div class="image-editor image-editor--add" data-image-editor>
+      <label class="image-editor-label">Group photo</label>
+      <button type="button" class="image-editor-preview-wrap image-editor-preview-wrap--empty" aria-label="Upload team photo">
+        <img class="image-editor-preview is-empty" id="team-preview-photo-preview" alt="Team photo preview" />
+        <span class="image-editor-overlay"><span>Click to upload team photo</span></span>
       </button>
       <input type="file" id="team-preview-photo-file" class="image-editor-file" accept="image/*" hidden />
       <div class="image-editor-url-row">
-        <input type="text" id="team-preview-photo-url" class="image-editor-url-input" placeholder="https://..." />
-        <button type="button" class="btn-clear-image-url">Clear link</button>
+        <input type="text" id="team-preview-photo-url" class="image-editor-url-input" placeholder="Photo URL or upload above" aria-label="Team photo URL" />
+        <button type="button" class="btn-clear-image-url">Remove photo</button>
       </div>
     </div>
-    <p class="admin-hint">This intro appears on the main page and at the top of the Team screen.</p>
+    <p class="admin-hint">The photo and description appear together on the homepage and Team page. Changes are saved in this browser.</p>
     <div class="admin-actions">
-      <button id="save-team-preview" type="button" class="btn-save">Save</button>
+      <button id="save-team-preview" type="button" class="btn-save">Save team</button>
       <button type="button" class="btn-delete" data-close-panel="team-preview-admin">Close</button>
     </div>
   </div>
@@ -294,59 +291,44 @@
 <section id="team-screen" class="team-screen hidden-screen" aria-hidden="true" hidden>
   <div class="team-screen-page">
     <div class="team-screen-inner">
+      <button id="close-team-screen" class="close-screen" type="button">Back to homepage</button>
       <div class="section-head-row team-screen-head">
         <h2 id="team-screen-who-title">Team</h2>
-        <div class="section-toolbar" data-admin-only>
-          <button type="button" class="btn-edit" data-edit-panel="who-section-admin">Edit intro</button>
-          <button type="button" class="btn-edit" data-edit-panel="team-section-admin">Edit team title</button>
-          <button type="button" class="btn-add" id="add-person-btn">+ Add person</button>
-          <button type="button" class="btn-delete" data-delete-section="who-section">Clear intro</button>
-        </div>
+        <div class="section-toolbar" data-admin-only><button type="button" class="btn-edit" data-edit-panel="who-section-admin">Edit team</button></div>
       </div>
-      <div class="who-split team-screen-intro">
-        <div class="who-split-media">
-          <img id="team-screen-image" src="" alt="" />
-        </div>
-        <div class="who-split-content">
-          <div id="team-screen-text" class="who-split-text"></div>
-        </div>
+      <div class="team-group-layout">
+        <div class="team-photo-slot">
+    <img id="team-screen-image" alt="Our team together" hidden />
+    <div class="team-photo-empty" id="team-screen-image-empty">
+      <span class="team-photo-empty-title">Team photo</span>
+      <span>A group photo will be added here.</span>
+      <button type="button" class="btn-edit" data-admin-only data-edit-panel="who-section-admin">Add team photo</button>
+    </div>
+  </div>
+        <div id="team-screen-text" class="who-split-text team-group-description"></div>
       </div>
-      <h3 id="team-screen-team-title" class="team-screen-subtitle">Our Team</h3>
-      <div id="team-screen-list" class="team-cards-grid team-screen-list"></div>
       <div id="who-section-admin" class="admin-panel section-admin" data-admin-only>
-        <h3>Edit team intro (photo + text)</h3>
-        <label>Section title</label>
-        <input id="who-title-input" type="text" />
-        <label>Text content (right side, 60%)</label>
-        <textarea id="who-text-input" rows="8"></textarea>
-        <div class="image-editor" data-image-editor>
-          <label class="image-editor-label">Photo (left side, 40%)</label>
-          <button type="button" class="image-editor-preview-wrap" aria-label="Replace section photo">
-            <img class="image-editor-preview" id="who-section-preview" alt="" />
-            <span class="image-editor-overlay"><span>Click to replace</span></span>
-          </button>
-          <input type="file" id="who-section-image-file" class="image-editor-file" accept="image/*" hidden />
-          <div class="image-editor-url-row">
-            <input type="text" id="who-section-image-url" class="image-editor-url-input" placeholder="https://..." />
-            <button type="button" class="btn-clear-image-url">Clear link</button>
-          </div>
-        </div>
-        <p class="admin-hint">This intro appears at the top of the Team screen.</p>
-        <div class="admin-actions">
-          <button id="save-who-section" type="button" class="btn-save">Save</button>
-          <button type="button" class="btn-delete" data-close-panel="who-section-admin">Close</button>
-        </div>
+    <h3>Edit team photo and description</h3>
+    <label for="who-title-input">Section title</label><input id="who-title-input" type="text" />
+    <label for="who-text-input">Description of the whole team</label><textarea id="who-text-input" rows="8"></textarea>
+    <div class="image-editor image-editor--add" data-image-editor>
+      <label class="image-editor-label">Group photo</label>
+      <button type="button" class="image-editor-preview-wrap image-editor-preview-wrap--empty" aria-label="Upload team photo">
+        <img class="image-editor-preview is-empty" id="who-section-preview" alt="Team photo preview" />
+        <span class="image-editor-overlay"><span>Click to upload team photo</span></span>
+      </button>
+      <input type="file" id="who-section-image-file" class="image-editor-file" accept="image/*" hidden />
+      <div class="image-editor-url-row">
+        <input type="text" id="who-section-image-url" class="image-editor-url-input" placeholder="Photo URL or upload above" aria-label="Team photo URL" />
+        <button type="button" class="btn-clear-image-url">Remove photo</button>
       </div>
-      <div id="team-section-admin" class="admin-panel section-admin" data-admin-only>
-        <h3>Team section title</h3>
-        <label>Title above Person 1, 2, 3…</label>
-        <input id="team-title-input" type="text" />
-        <div class="admin-actions">
-          <button id="save-team-section" type="button" class="btn-save">Save</button>
-          <button type="button" class="btn-delete" data-close-panel="team-section-admin">Close</button>
-        </div>
-        <p class="admin-hint">Click a person to view and edit their profile.</p>
-      </div>
+    </div>
+    <p class="admin-hint">The photo and description appear together on the homepage and Team page. Changes are saved in this browser.</p>
+    <div class="admin-actions">
+      <button id="save-who-section" type="button" class="btn-save">Save team</button>
+      <button type="button" class="btn-delete" data-close-panel="who-section-admin">Close</button>
+    </div>
+  </div>
     </div>
   </div>
 </section>
@@ -402,7 +384,7 @@
       </div>
       <div class="site-footer-col site-footer-col--services">
         <div class="footer-col-head">
-          <h3 id="site-footer-services-title">Servicii</h3>
+          <h3 id="site-footer-services-title">Services</h3>
           <div class="section-toolbar footer-col-toolbar" data-admin-only>
             <button type="button" class="btn-edit" data-edit-panel="footer-services-admin">Edit</button>
           </div>
@@ -442,6 +424,7 @@
         </ul>
         <div id="footer-contact-admin" class="admin-panel section-admin" data-admin-only>
           <h3>Edit Contact column</h3>
+          <p class="admin-hint">Updates Contact and every page footer. Saved in this browser.</p>
           <label>Address</label>
           <textarea id="footer-contact-address-input" rows="3"></textarea>
           <label>Phone</label>
@@ -460,8 +443,8 @@
   <div class="site-footer-copyright-bar">
     <div class="site-footer-copyright-inner section-head-row footer-head">
       <a href="#home" class="site-footer-logo-link" id="site-footer-logo-link" aria-label="Home">
-        <span class="logo-brand-visual site-footer-logo-visual" id="site-footer-logo-visual">
-          <img id="site-footer-logo-image" class="logo-brand-image site-footer-logo-img" alt="" hidden />
+        <span class="logo-brand-visual has-logo-image site-footer-logo-visual" id="site-footer-logo-visual">
+          <img id="site-footer-logo-image" class="logo-brand-image site-footer-logo-img" src="assets/steel-hall-mark-light.svg" alt="" />
           <span id="site-footer-logo-text" class="logo-brand-text"></span>
         </span>
       </a>
@@ -526,62 +509,6 @@
   </div>
 </section>
 
-<section id="person-screen" class="detail-screen hidden-screen" aria-hidden="true">
-  <div class="detail-panel">
-    <button id="close-person-screen" class="close-screen" type="button">Close</button>
-    <h2 id="person-title"></h2>
-    <p id="person-role" class="person-role-display"></p>
-    <p id="person-bio"></p>
-    <div id="person-socials" class="person-socials-display"></div>
-    <div id="person-media" class="detail-media"></div>
-    <div id="person-admin-panel" class="admin-panel" data-admin-only>
-      <h3>Edit person</h3>
-      <label>Name</label>
-      <input id="person-name-input" type="text" />
-      <label>Role / Title</label>
-      <input id="person-role-input" type="text" placeholder="e.g. Senior Engineer" />
-      <label>Bio</label>
-      <textarea id="person-bio-input"></textarea>
-      <label>LinkedIn URL</label>
-      <input id="person-linkedin-input" type="url" placeholder="https://linkedin.com/in/..." />
-      <label>GitHub URL</label>
-      <input id="person-github-input" type="url" placeholder="https://github.com/..." />
-      <label>Email</label>
-      <input id="person-email-input" type="email" placeholder="name@company.com" />
-      <div class="image-editor" data-image-editor>
-        <label class="image-editor-label">Cover image</label>
-        <button type="button" class="image-editor-preview-wrap" aria-label="Replace cover">
-          <img class="image-editor-preview" id="person-cover-preview" alt="" />
-          <span class="image-editor-overlay"><span>Click to replace</span></span>
-        </button>
-        <input type="file" id="person-cover-file" class="image-editor-file" accept="image/*" hidden />
-        <div class="image-editor-url-row">
-          <input type="text" id="person-cover-url" class="image-editor-url-input" placeholder="https://..." />
-          <button type="button" class="btn-clear-image-url">Clear link</button>
-        </div>
-      </div>
-      <p class="media-list-label"><strong>Extra photos</strong></p>
-      <div id="person-media-admin-list" class="media-admin-list"></div>
-      <div class="image-editor image-editor--add" data-image-editor>
-        <label class="image-editor-label">Add photo</label>
-        <button type="button" class="image-editor-preview-wrap image-editor-preview-wrap--empty" aria-label="Upload photo">
-          <img class="image-editor-preview" id="person-new-media-preview" alt="" />
-          <span class="image-editor-overlay"><span>Click to upload</span></span>
-        </button>
-        <input type="file" id="person-media-file" class="image-editor-file" accept="image/*" hidden />
-        <div class="image-editor-url-row">
-          <input type="text" id="person-media-url" class="image-editor-url-input" placeholder="https://..." />
-          <button type="button" class="btn-clear-image-url">Clear link</button>
-        </div>
-      </div>
-      <div class="admin-actions">
-        <button id="save-person" type="button" class="btn-save">Save</button>
-        <button id="delete-person" type="button" class="btn-delete">Delete person</button>
-      </div>
-    </div>
-  </div>
-</section>
-
 <section id="inbox-screen" class="detail-screen hidden-screen" aria-hidden="true">
   <div class="detail-panel inbox-panel">
     <button id="close-inbox-screen" class="close-screen" type="button">Close</button>
@@ -625,7 +552,13 @@
 <section id="contact-screen" class="contact-screen hidden-screen" aria-hidden="true" hidden>
   <div class="contact-screen-page">
     <div class="contact-screen-main">
-      <h2 id="contact-title">Contact Us</h2>
+      <div class="section-head-row contact-screen-head">
+        <h2 id="contact-title">Contact Us</h2>
+        <div class="section-toolbar" data-admin-only>
+          <button type="button" class="btn-edit" data-edit-panel="contact-admin-panel">Edit</button>
+          <button type="button" class="btn-delete" data-delete-section="contact">Delete</button>
+        </div>
+      </div>
       <p id="contact-text" class="contact-screen-intro"></p>
       <form id="contact-form" class="contact-form contact-screen-form" novalidate>
         <label for="contact-name">Your name</label>
@@ -646,12 +579,26 @@
         <h3 class="contact-info-heading">Contact information</h3>
         <div id="contact-info-body" class="contact-info-body"></div>
       </div>
+      <div id="contact-admin-panel" class="admin-panel section-admin contact-screen-admin" data-admin-only>
+        <h3>Edit Contact page</h3>
+        <label for="contact-title-input">Page title</label>
+        <input id="contact-title-input" type="text" />
+        <label for="contact-text-input">Intro text</label>
+        <textarea id="contact-text-input" rows="2"></textarea>
+        <label for="contact-info-text-input">Contact information</label>
+        <textarea id="contact-info-text-input" rows="10"></textarea>
+        <p class="admin-hint">Use blank lines between paragraphs. Prefix lines with Email:, Telefon:, or Fax: for linked fields. Contact details and the footer on every screen stay in sync when you save. Changes are saved in this browser.</p>
+        <div class="admin-actions">
+          <button id="save-contact" type="button" class="btn-save">Save</button>
+          <button type="button" class="btn-delete" data-close-panel="contact-admin-panel">Close</button>
+        </div>
+      </div>
     </div>
-    <footer class="contact-copyright-bar">
+    <footer class="contact-copyright-bar" hidden>
       <div class="contact-copyright-inner">
         <a href="#home" class="contact-copyright-logo" id="contact-screen-logo-link" aria-label="Home">
-          <span class="logo-brand-visual contact-copyright-logo-visual" id="contact-screen-logo-visual">
-            <img id="contact-screen-logo-image" class="logo-brand-image contact-copyright-logo-img" alt="" hidden />
+          <span class="logo-brand-visual has-logo-image contact-copyright-logo-visual" id="contact-screen-logo-visual">
+            <img id="contact-screen-logo-image" class="logo-brand-image contact-copyright-logo-img" src="assets/steel-hall-mark-light.svg" alt="" />
             <span id="contact-screen-logo-text" class="logo-brand-text"></span>
           </span>
         </a>
@@ -720,6 +667,7 @@
 </aside>
 
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script src="shared-footer.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

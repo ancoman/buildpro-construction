@@ -320,8 +320,6 @@ body.contact-screen-open .services,
 body.contact-screen-open .projects,
 body.contact-screen-open .about,
 body.contact-screen-open > footer,
-body.contact-screen-open .site-footer-bar,
-body.contact-screen-open .site-footer-copyright-bar,
 body.contact-screen-open #footer-admin-panel,
 body.contact-screen-open #footer-program-admin,
 body.contact-screen-open #footer-services-admin,
@@ -2641,6 +2639,16 @@ body.admin-mode .admin-panel.open {
 body.admin-mode .detail-screen .admin-panel[data-admin-only],
 body.admin-mode #person-screen .admin-panel[data-admin-only],
 body.admin-mode #project-gallery-screen .admin-panel[data-admin-only],
+body.admin-mode #contact-screen .admin-panel[data-admin-only] {
+  display: none;
+}
+
+body.admin-mode .detail-screen .admin-panel.open,
+body.admin-mode #person-screen .admin-panel.open,
+body.admin-mode #project-gallery-screen .admin-panel.open,
+body.admin-mode #contact-screen .admin-panel.open {
+  display: block;
+}
 
 .section-toolbar {
   display: none;
@@ -3672,3 +3680,61 @@ html {
     justify-content: flex-end;
   }
 }
+
+/* Shared footer: allow long contact details to wrap on every screen. */
+.site-footer-inner { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 2rem; }
+.site-footer-address, .site-footer-program-text, .site-footer-legal { white-space: normal; overflow-wrap: anywhere; }
+.site-footer-item a, .site-footer-item span { overflow-wrap: anywhere; }
+.site-footer-col h3 { font-size: 0.875rem; }
+.site-footer-program-text, .site-footer-list a, .site-footer-item a, .site-footer-item span { font-size: 1rem; }
+.site-footer-subheading:empty, .site-footer-legal:empty { display: none; }
+.site-footer-copyright-inner { flex-wrap: wrap; padding-top: 12px; padding-bottom: 12px; }
+.site-footer-copyright-text { white-space: normal; font-size: 0.875rem; line-height: 1.5; }
+footer[data-shared-footer] { margin-top: auto; }
+.detail-panel > footer[data-shared-footer] { margin-top: 2rem; }
+.team-screen-page { display: flex; flex-direction: column; }
+body.contact-screen-open .contact-screen-page { overflow-y: auto; overflow-x: hidden; }
+body.contact-screen-open .contact-screen-main { flex: 1 0 auto; min-height: calc(100dvh - var(--site-header-height, 52px)); overflow: visible; }
+.contact-screen-page > .contact-copyright-bar { display: none; }
+.contact-screen-page > footer[data-shared-footer] { flex: 0 0 auto; }
+@media (max-width: 900px) {
+  .site-footer-inner { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .site-footer-col--contact { grid-column: 1 / -1; }
+}
+@media (max-width: 600px) {
+  .site-footer-bar { padding: 2rem 1.25rem; }
+  .site-footer-inner { grid-template-columns: minmax(0, 1fr); }
+  .site-footer-logo-link + .site-footer-copyright-text { border-left: 0; padding-left: 0; }
+  .site-footer-copyright-inner { flex-direction: column; text-align: center; }
+  .site-footer-copyright-text { text-align: center; }
+}
+
+
+/* One group photo and one description for the entire team. */
+.team-group-layout { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: center; }
+.team-photo-slot { display: grid; width: 100%; min-width: 0; aspect-ratio: 16 / 10; background: #edf2f7; border: 1px dashed #8fa4b8; border-radius: 8px; overflow: hidden; }
+.team-photo-slot img { display: block; width: 100%; height: 100%; min-height: 0; object-fit: contain; }
+.team-photo-slot img[hidden], .team-photo-empty[hidden] { display: none; }
+.team-photo-empty { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 0.75rem; padding: 1.5rem; text-align: center; color: #4a6077; }
+.team-photo-empty-title { font-size: 1.25rem; font-weight: 600; color: #1a3a5c; }
+.team-photo-empty .btn-edit { margin-top: 0.5rem; }
+.team-group-description { min-width: 0; font-size: 1rem; line-height: 1.75; overflow-wrap: anywhere; }
+.team-group-description .team-preview-cta { margin-top: 1rem; }
+@media (max-width: 800px) { .team-group-layout { grid-template-columns: minmax(0, 1fr); } }
+
+.team-photo-empty [data-admin-only] { display: none; }
+body.admin-mode .team-photo-empty [data-admin-only] { display: inline-flex; }
+
+body.team-screen-open #team-screen.team-screen { inset: var(--team-header-height, 48px) 0 0; height: auto; min-height: 0; }
+
+
+/* Compact symbol before the company name, with a small consistent gap. */
+.site-header .nav-item--logo { flex: 0 0 auto; min-width: 0; }
+.site-header .nav-logo-link { width: auto; }
+.logo-brand-visual { gap: 8px; }
+.site-header .logo-brand-visual { width: max-content; max-width: 100%; padding: 0 8px; }
+.logo-brand-visual .logo-brand-image { width: 26px; height: 26px; min-width: 26px; max-width: 26px; flex: 0 0 26px; object-fit: contain; }
+.logo-brand-visual .logo-brand-image[hidden] { display: none; }
+.site-header .logo-brand-text { padding: 0; max-width: none; font-size: 0.85rem; }
+.site-footer-logo-visual, .contact-copyright-logo-visual { width: auto; height: 28px; min-height: 0; max-height: 28px; gap: 6px; }
+.site-footer-logo-visual .logo-brand-image, .contact-copyright-logo-visual .logo-brand-image { width: 20px; height: 20px; min-width: 20px; max-width: 20px; flex-basis: 20px; }

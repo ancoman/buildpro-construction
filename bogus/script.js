@@ -49,6 +49,7 @@ const defaultData = {
     whoText:
       "We are a dedicated construction team focused on quality delivery, safety, and customer satisfaction in every project.",
     whoSectionImage: PLACEHOLDER,
+    teamPhoto: "",
     teamTitle: "Our Team",
     servicesTitle: "Services",
     servicesAboutHeading: "Built for strength and scale",
@@ -62,17 +63,18 @@ const defaultData = {
     contactTitle: "Contact Us",
     contactText: "Get in touch for quotes and project consultations.",
     contactInfoText:
-      "Clădirea VIA Office, Str. Colinei, Nr. 2, Etaj 3\n400520 Cluj-Napoca\nCluj, România\n\nEmail: office@terragres.ro\n\nTelefon: +40 754 087 602 / +40 755 110 102\n\nFax: +40 374 096 444\n\nUrmărește-ne aici:",
-    contactProgramText: "Luni – Vineri: 09:00 – 17:00\nSâmbătă - Duminică: Închis",
+      BuildProFooter.defaults.contactInfoText,
+    contactProgramText: BuildProFooter.defaults.contactProgramText,
     contactFooterAddress:
-      "Clădirea VIA Office, Str. Colinei, Nr. 2, Etaj 3, 400520 Cluj-Napoca Cluj, România",
-    contactFooterPhone: "+40 754 087 602",
-    contactFooterEmail: "office@terragres.ro",
-    footerLegalTitle: "Protecția datelor",
-    footerLegalText: "Termeni și Condiții & Politica de Confidențialitate",
+      BuildProFooter.defaults.contactFooterAddress,
+    contactFooterPhone: BuildProFooter.defaults.contactFooterPhone,
+    contactFooterEmail: BuildProFooter.defaults.contactFooterEmail,
+    footerLegalTitle: BuildProFooter.defaults.footerLegalTitle,
+    footerLegalText: BuildProFooter.defaults.footerLegalText,
     footerText: "© 2026 BuildPro Construction. All rights reserved.",
     logoText: "BuildPro Construction",
-    logoImage: ""
+    logoImage: "assets/steel-hall-mark-light.svg",
+    logoMarkVersion: 1
   },
   services: [
     {
@@ -187,14 +189,14 @@ const terragresSitePreset = {
     contactTitle: "Ia legătura cu noi!",
     contactText: "Executăm lucrări oriunde în țară.",
     contactInfoText:
-      "Clădirea VIA Office, Str. Colinei, Nr. 2, Etaj 3\n400520 Cluj-Napoca\nCluj, România\n\nEmail: office@terragres.ro\n\nTelefon: +40 754 087 602 / +40 755 110 102\n\nFax: +40 374 096 444\n\nUrmărește-ne aici:",
-    contactProgramText: "Luni – Vineri: 09:00 – 17:00\nSâmbătă - Duminică: Închis",
+      BuildProFooter.defaults.contactInfoText,
+    contactProgramText: BuildProFooter.defaults.contactProgramText,
     contactFooterAddress:
-      "Clădirea VIA Office, Str. Colinei, Nr. 2, Etaj 3, 400520 Cluj-Napoca Cluj, România",
-    contactFooterPhone: "+40 754 087 602",
-    contactFooterEmail: "office@terragres.ro",
-    footerLegalTitle: "Protecția datelor",
-    footerLegalText: "Termeni și Condiții & Politica de Confidențialitate",
+      BuildProFooter.defaults.contactFooterAddress,
+    contactFooterPhone: BuildProFooter.defaults.contactFooterPhone,
+    contactFooterEmail: BuildProFooter.defaults.contactFooterEmail,
+    footerLegalTitle: BuildProFooter.defaults.footerLegalTitle,
+    footerLegalText: BuildProFooter.defaults.footerLegalText,
     footerText: "© 2026 Terra Gres SRL. Toate drepturile rezervate.",
     logoText: "Terra Gres",
     logoImage: TERRAGRES_LOGO
@@ -300,7 +302,6 @@ let siteData = loadData();
 let tickets = loadTickets();
 let notifySettings = loadNotifySettings();
 let activeProjectId = null;
-let activePersonId = null;
 let editingServiceId = null;
 let selectedTicketId = null;
 let scrollEffectsInitialized = false;
@@ -313,7 +314,6 @@ const loginScreen = document.getElementById("login-screen");
 const loginForm = document.getElementById("login-form");
 const loginError = document.getElementById("login-error");
 const projectGalleryScreen = document.getElementById("project-gallery-screen");
-const personScreen = document.getElementById("person-screen");
 const teamScreen = document.getElementById("team-screen");
 const contactScreen = document.getElementById("contact-screen");
 let teamScreenOpen = false;
@@ -339,9 +339,7 @@ function init() {
     bindMainAdmin();
     bindProjectEditAdmin();
     bindProjectGalleryAdmin();
-    bindPersonAdmin();
     document.getElementById("close-project-gallery")?.addEventListener("click", closeProjectGallery);
-    document.getElementById("close-person-screen")?.addEventListener("click", closePersonDetails);
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && projectGalleryOpen) closeProjectGallery();
       if (e.key === "Escape" && contactScreenOpen) closeContactScreen();
@@ -529,7 +527,7 @@ function deleteSectionContent(section) {
     case "who-section":
       c.whoTitle = "";
       c.whoText = "";
-      c.whoSectionImage = "";
+      c.teamPhoto = "";
       break;
     case "about":
       c.aboutTitle = "";
@@ -569,16 +567,6 @@ function setupMenu() {
       e.preventDefault();
       dismissContactForNav();
       openProjectGallery(projectLink.dataset.navProject);
-      nav.classList.remove("active");
-      return;
-    }
-    const personLink = e.target.closest("[data-nav-person]");
-    if (personLink) {
-      e.preventDefault();
-      dismissContactForNav();
-      dismissTeamForNav();
-      openTeamScreen();
-      openPersonDetails(personLink.dataset.navPerson);
       nav.classList.remove("active");
       return;
     }
@@ -720,8 +708,25 @@ function renderContactScreen() {
   if (copyrightEl) {
     copyrightEl.textContent = c.footerText || d.footerText || "";
   }
+  if (isAdmin()) {
+    const titleIn = document.getElementById("contact-title-input");
+    if (titleIn) titleIn.value = c.contactTitle ?? d.contactTitle ?? "";
+    const textIn = document.getElementById("contact-text-input");
+    if (textIn) textIn.value = c.contactText ?? d.contactText ?? "";
+    const infoIn = document.getElementById("contact-info-text-input");
+    if (infoIn) infoIn.value = c.contactInfoText ?? d.contactInfoText ?? "";
+  }
 }
+function updateTeamHeaderHeight() {
+  const height = document.querySelector(".site-header")?.getBoundingClientRect().height || 0;
+  document.documentElement.style.setProperty("--team-header-height", `${height}px`);
+}
+
 function setupWhoTeamScreen() {
+  const header = document.querySelector(".site-header");
+  if (header) new ResizeObserver(updateTeamHeaderHeight).observe(header);
+  window.addEventListener("resize", () => { if (teamScreenOpen) updateTeamHeaderHeight(); });
+  document.getElementById("close-team-screen")?.addEventListener("click", closeTeamScreen);
   document.getElementById("team-preview-open")?.addEventListener("click", (e) => {
     e.preventDefault();
     openTeamScreen();
@@ -731,11 +736,11 @@ function setupWhoTeamScreen() {
     openTeamScreen();
   });
 
-  document.getElementById("add-person-btn-main")?.addEventListener("click", () => addPerson());
 }
 
 function showTeamUI() {
   if (!teamScreen) return;
+  updateTeamHeaderHeight();
   teamScreenOpen = true;
   teamScreen.classList.remove("hidden-screen");
   teamScreen.classList.add("is-open");
@@ -789,164 +794,56 @@ function closeTeamScreen() {
 }
 
 function renderTeamScreen() {
-  const c = siteData.content;
-  const d = defaultData.content;
-  const whoImg = c.whoSectionImage || d.whoSectionImage || PLACEHOLDER;
-
-  document.getElementById("team-screen-who-title").textContent =
-    c.whoTitle || d.whoTitle || "Team";
-  document.getElementById("team-screen-image").src = whoImg;
-  document.getElementById("team-screen-image").alt = c.whoTitle || d.whoTitle || "Team";
-  document.getElementById("team-screen-text").innerHTML = formatAboutText(c.whoText || d.whoText || "");
-  document.getElementById("team-screen-team-title").textContent =
-    c.teamTitle || d.teamTitle || "Our Team";
-
-  if (isAdmin()) {
-    document.getElementById("who-title-input").value = c.whoTitle ?? d.whoTitle ?? "";
-    document.getElementById("who-text-input").value = c.whoText ?? d.whoText ?? "";
-    document.getElementById("who-section-image-url").value =
-      c.whoSectionImage ?? d.whoSectionImage ?? "";
-    setImageEditorPreview("who-section-preview", whoImg);
-    document.getElementById("team-title-input").value = c.teamTitle ?? d.teamTitle ?? "";
-  }
-  renderTeamScreenList();
+  renderGroupTeam("team-screen-who-title", "team-screen-text", "team-screen-image");
+  fillGroupTeamEditor("who-title-input", "who-text-input", "who-section-image-url", "who-section-preview");
 }
 
 function renderTeamPreview() {
+  renderGroupTeam("team-preview-who-title", "team-preview-text", "team-preview-image");
+  fillGroupTeamEditor("team-preview-title-input", "team-preview-text-input", "team-preview-photo-url", "team-preview-photo-preview");
+}
+
+function renderGroupTeam(titleId, textId, imageId) {
   const c = siteData.content;
-  const d = defaultData.content;
-  const whoTitle = c.whoTitle || d.whoTitle || "Team";
-  const whoText = c.whoText || d.whoText || "";
-  const whoImg = c.whoSectionImage || d.whoSectionImage || PLACEHOLDER;
+  document.getElementById(titleId).textContent = c.whoTitle || "Team";
+  document.getElementById(textId).innerHTML = formatAboutText(c.whoText ?? defaultData.content.whoText);
+  const image = document.getElementById(imageId);
+  const photo = c.teamPhoto || "";
+  image.hidden = !photo;
+  if (photo) image.src = photo;
+  else image.removeAttribute("src");
+  document.getElementById(imageId + "-empty").hidden = Boolean(photo);
+}
 
-  const titleEl = document.getElementById("team-preview-who-title");
-  if (titleEl) titleEl.textContent = whoTitle;
-
-  const imgEl = document.getElementById("team-preview-image");
-  if (imgEl) { imgEl.src = whoImg; imgEl.alt = whoTitle; }
-
-  const textEl = document.getElementById("team-preview-text");
-  if (textEl) textEl.innerHTML = formatAboutText(whoText);
-
-  if (isAdmin()) {
-    const tIn = document.getElementById("team-preview-title-input");
-    if (tIn) tIn.value = c.whoTitle ?? d.whoTitle ?? "";
-    const txIn = document.getElementById("team-preview-text-input");
-    if (txIn) txIn.value = c.whoText ?? d.whoText ?? "";
-    const urlIn = document.getElementById("team-preview-photo-url");
-    if (urlIn) urlIn.value = c.whoSectionImage ?? d.whoSectionImage ?? "";
-    setImageEditorPreview("team-preview-photo-preview", whoImg);
-  }
+function fillGroupTeamEditor(titleId, textId, urlId, previewId) {
+  if (!isAdmin()) return;
+  const c = siteData.content;
+  document.getElementById(titleId).value = c.whoTitle || "Team";
+  document.getElementById(textId).value = c.whoText ?? defaultData.content.whoText;
+  document.getElementById(urlId).value = c.teamPhoto || "";
+  const preview = document.getElementById(previewId);
+  if (c.teamPhoto) preview.src = c.teamPhoto;
+  else preview.removeAttribute("src");
+  preview.classList.toggle("is-empty", !c.teamPhoto);
+  preview.closest(".image-editor-preview-wrap").classList.toggle("image-editor-preview-wrap--empty", !c.teamPhoto);
 }
 
 async function saveTeamPreviewSection() {
+  await saveGroupTeam("team-preview-title-input", "team-preview-text-input", "team-preview-photo-url", "team-preview-photo-file");
+}
+
+async function saveGroupTeam(titleId, textId, urlId, fileId) {
   if (!isAdmin()) return;
-  const d = defaultData.content;
-  const title = document.getElementById("team-preview-title-input").value.trim();
-  siteData.content.whoTitle = title || siteData.content.whoTitle || d.whoTitle;
-  siteData.content.whoText = document.getElementById("team-preview-text-input").value.trim();
-  const img = await resolveUrlOrFile("team-preview-photo-url", "team-preview-photo-file");
-  if (img) siteData.content.whoSectionImage = img;
+  siteData.content.whoTitle = document.getElementById(titleId).value.trim() || "Team";
+  siteData.content.whoText = document.getElementById(textId).value.trim();
+  siteData.content.teamPhoto = await resolveUrlOrFile(urlId, fileId);
+  document.getElementById(fileId).value = "";
   closeAllAdminPanels();
   persistAndRender();
-  toast("Team intro saved.");
+  toast("Team photo and description saved.");
 }
 
-function renderTeamScreenList() {
-  const gallery = document.getElementById("team-screen-list");
-  if (!gallery) return;
-  gallery.innerHTML = "";
-  if (!siteData.whoPeople.length) {
-    gallery.innerHTML = '<p class="inbox-hint">No team members yet. Add a person as admin.</p>';
-    return;
-  }
 
-  siteData.whoPeople.forEach((person) => {
-    const card = document.createElement("article");
-    card.className = "team-card";
-    card.dataset.id = person.id;
-
-    const avatarWrap = document.createElement("div");
-    avatarWrap.className = "team-card-avatar-wrap";
-    if (person.cover && person.cover !== PLACEHOLDER) {
-      const img = document.createElement("img");
-      img.src = person.cover;
-      img.alt = person.name;
-      img.className = "team-card-avatar";
-      avatarWrap.appendChild(img);
-    } else {
-      const initials = person.name.split(" ").filter(Boolean).map((w) => w[0]).join("").slice(0, 2).toUpperCase();
-      const div = document.createElement("div");
-      div.className = "team-card-avatar-initials";
-      div.textContent = initials;
-      avatarWrap.appendChild(div);
-    }
-
-    const nameEl = document.createElement("h3");
-    nameEl.className = "team-card-name";
-    nameEl.textContent = person.name;
-
-    card.appendChild(avatarWrap);
-    card.appendChild(nameEl);
-
-    if (person.role) {
-      const roleEl = document.createElement("p");
-      roleEl.className = "team-card-role";
-      roleEl.textContent = person.role;
-      card.appendChild(roleEl);
-    }
-
-    if (person.bio) {
-      const bioEl = document.createElement("p");
-      bioEl.className = "team-card-bio";
-      bioEl.textContent = person.bio;
-      card.appendChild(bioEl);
-    }
-
-    const hasSocials = person.linkedin || person.github || person.email;
-    if (hasSocials) {
-      const socials = document.createElement("div");
-      socials.className = "team-card-socials";
-      if (person.linkedin) {
-        const a = document.createElement("a");
-        a.href = person.linkedin; a.target = "_blank"; a.rel = "noopener noreferrer";
-        a.className = "team-card-social-link"; a.textContent = "LinkedIn";
-        a.addEventListener("click", (e) => e.stopPropagation());
-        socials.appendChild(a);
-      }
-      if (person.github) {
-        const a = document.createElement("a");
-        a.href = person.github; a.target = "_blank"; a.rel = "noopener noreferrer";
-        a.className = "team-card-social-link"; a.textContent = "GitHub";
-        a.addEventListener("click", (e) => e.stopPropagation());
-        socials.appendChild(a);
-      }
-      if (person.email) {
-        const a = document.createElement("a");
-        a.href = `mailto:${person.email}`;
-        a.className = "team-card-social-link"; a.textContent = "Email";
-        a.addEventListener("click", (e) => e.stopPropagation());
-        socials.appendChild(a);
-      }
-      card.appendChild(socials);
-    }
-
-    const adminHtml = adminCardActionsHtml("person", person.id);
-    if (adminHtml) {
-      const adminWrap = document.createElement("div");
-      adminWrap.innerHTML = adminHtml;
-      card.appendChild(adminWrap.firstElementChild);
-    }
-
-    card.addEventListener("click", (e) => {
-      if (e.target.closest(".card-admin-bar") || e.target.closest(".team-card-social-link")) return;
-      openPersonDetails(person.id);
-    });
-
-    gallery.appendChild(card);
-  });
-  bindCardAdmin(gallery);
-}
 
 function renderNavDropdowns() {
   const c = siteData.content;
@@ -1423,7 +1320,6 @@ function logoutAdmin() {
   if (location.hash === "#contact") {
     history.replaceState({ view: "home" }, "", "#home");
   }
-  closePersonDetails();
   editingServiceId = null;
   persistAndRender();
 }
@@ -1432,7 +1328,6 @@ function bindMainAdmin() {
   document.getElementById("save-hero").addEventListener("click", saveHero);
   document.getElementById("save-logo").addEventListener("click", saveLogo);
   document.getElementById("save-who-section").addEventListener("click", saveWhoSection);
-  document.getElementById("save-team-section").addEventListener("click", saveTeamSection);
   document.getElementById("save-services-section").addEventListener("click", saveServicesSection);
   document.getElementById("save-services-about").addEventListener("click", saveServicesAbout);
   document.getElementById("save-projects-section").addEventListener("click", saveProjectsSection);
@@ -1441,8 +1336,8 @@ function bindMainAdmin() {
   document.getElementById("save-footer-program").addEventListener("click", saveFooterProgram);
   document.getElementById("save-footer-services").addEventListener("click", saveFooterServices);
   document.getElementById("save-footer-contact").addEventListener("click", saveFooterContact);
+  document.getElementById("save-contact").addEventListener("click", saveContact);
   document.getElementById("save-team-preview").addEventListener("click", saveTeamPreviewSection);
-  document.getElementById("add-person-btn").addEventListener("click", () => addPerson());
   document.getElementById("add-service-btn-top").addEventListener("click", () => addService());
   document.getElementById("add-project-btn-top").addEventListener("click", () => addProject());
 }
@@ -1522,10 +1417,7 @@ function bindProjectGalleryAdmin() {
   });
 }
 
-function bindPersonAdmin() {
-  document.getElementById("save-person").addEventListener("click", savePersonItem);
-  document.getElementById("delete-person").addEventListener("click", deletePersonItem);
-}
+
 
 async function saveHero() {
   if (!isAdmin()) return;
@@ -1541,23 +1433,10 @@ async function saveHero() {
 }
 
 async function saveWhoSection() {
-  if (!isAdmin()) return;
-  siteData.content.whoTitle = document.getElementById("who-title-input").value.trim();
-  siteData.content.whoText = document.getElementById("who-text-input").value.trim();
-  const img = await resolveUrlOrFile("who-section-image-url", "who-section-image-file");
-  if (img) siteData.content.whoSectionImage = img;
-  closeAllAdminPanels();
-  persistAndRender();
-  toast("Team intro saved.");
+  await saveGroupTeam("who-title-input", "who-text-input", "who-section-image-url", "who-section-image-file");
 }
 
-function saveTeamSection() {
-  if (!isAdmin()) return;
-  siteData.content.teamTitle = document.getElementById("team-title-input").value.trim();
-  closeAllAdminPanels();
-  persistAndRender();
-  toast("Team section saved.");
-}
+
 
 function saveServicesSection() {
   if (!isAdmin()) return;
@@ -1624,33 +1503,35 @@ function saveFooterServices() {
 
 function saveFooterContact() {
   if (!isAdmin()) return;
-  siteData.content.contactFooterAddress = document.getElementById("footer-contact-address-input").value.trim();
-  siteData.content.contactFooterPhone = document.getElementById("footer-contact-phone-input").value.trim();
-  siteData.content.contactFooterEmail = document.getElementById("footer-contact-email-input").value.trim();
+  const address = document.getElementById("footer-contact-address-input").value.trim();
+  const phone = document.getElementById("footer-contact-phone-input").value.trim();
+  const email = document.getElementById("footer-contact-email-input").value.trim();
+  siteData.content.contactFooterAddress = address;
+  siteData.content.contactFooterPhone = phone;
+  siteData.content.contactFooterEmail = email;
+  siteData.content.contactInfoText = [address, email ? `Email: ${email}` : "", phone ? `Telefon: ${phone}` : ""].filter(Boolean).join("\n\n");
   closeAllAdminPanels();
   persistAndRender();
   toast("Contact column saved.");
 }
 
-function addPerson() {
+function saveContact() {
   if (!isAdmin()) return;
-  const id = `person-${Date.now()}`;
-  const n = siteData.whoPeople.length + 1;
-  siteData.whoPeople.push({
-    id,
-    name: `Person ${n}`,
-    role: "",
-    bio: "Team member profile. Add role and experience here.",
-    cover: PLACEHOLDER,
-    media: [],
-    linkedin: "",
-    github: "",
-    email: ""
-  });
+  siteData.content.contactTitle = document.getElementById("contact-title-input").value.trim();
+  siteData.content.contactText = document.getElementById("contact-text-input").value.trim();
+  siteData.content.contactInfoText = document.getElementById("contact-info-text-input").value.trim();
+  const parsed = parseContactInfoText(siteData.content.contactInfoText);
+  if (parsed.address) siteData.content.contactFooterAddress = parsed.address;
+  if (parsed.phone) {
+    siteData.content.contactFooterPhone = parsed.phone.split(/\s*\/\s*/)[0].trim();
+  }
+  if (parsed.email) siteData.content.contactFooterEmail = parsed.email;
+  closeAllAdminPanels();
   persistAndRender();
-  openTeamScreen();
-  openPersonDetails(id);
+  toast("Contact page saved.");
 }
+
+
 
 function addService() {
   if (!isAdmin()) return;
@@ -1685,13 +1566,7 @@ async function addProject() {
   toast("Project added. Add details and more photos on the project screen.");
 }
 
-function deletePersonById(id) {
-  if (!confirm("Delete this person?")) return;
-  siteData.whoPeople = siteData.whoPeople.filter((p) => p.id !== id);
-  closePersonDetails();
-  persistAndRender();
-  toast("Person deleted.");
-}
+
 
 function deleteServiceById(id) {
   if (!confirm("Delete this service field?")) return;
@@ -1711,6 +1586,7 @@ function deleteProjectById(id) {
 }
 
 function renderAll() {
+  siteData.content = BuildProFooter.normalize(siteData.content);
   renderRoleState();
   renderContent();
   renderServices();
@@ -1733,7 +1609,6 @@ function renderAll() {
     if (item) fillProjectCoverForm(item);
     else closeProjectEdit();
   }
-  if (activePersonId) openPersonDetails(activePersonId);
 }
 
 function renderRoleState() {
@@ -1755,8 +1630,6 @@ function renderContent() {
   document.getElementById("hero-description").textContent = c.heroDescription;
   document.querySelector(".hero").style.backgroundImage = `url('${c.heroBackground}')`;
 
-  document.getElementById("team-title-input").value =
-    c.teamTitle ?? defaultData.content.teamTitle ?? "";
   document.getElementById("services-title").textContent = c.servicesTitle;
   document.getElementById("services-about-heading").textContent =
     c.servicesAboutHeading || "";
@@ -1777,8 +1650,6 @@ function renderContent() {
   document.getElementById("hero-description-input").value = c.heroDescription;
   document.getElementById("hero-bg-url").value = c.heroBackground;
   setImageEditorPreview("hero-bg-preview", c.heroBackground);
-  document.getElementById("team-title-input").value =
-    c.teamTitle ?? defaultData.content.teamTitle ?? "";
   document.getElementById("services-title-input").value = c.servicesTitle;
   document.getElementById("services-about-heading-input").value = c.servicesAboutHeading || "";
   document.getElementById("services-about-text-input").value = c.servicesAboutText || "";
@@ -1815,23 +1686,19 @@ function bindCardAdmin(container) {
       const id = btn.dataset.id;
       const action = btn.dataset.action;
       if (action === "delete") {
-        if (type === "person") deletePersonById(id);
-        else if (type === "service") deleteServiceById(id);
+        if (type === "service") deleteServiceById(id);
         else if (type === "project") deleteProjectById(id);
         return;
       }
       if (action === "edit") {
-        if (type === "person") openPersonDetails(id);
-        else if (type === "service") openServiceEdit(id);
+        if (type === "service") openServiceEdit(id);
         else openProjectEdit(id);
       }
     });
   });
 }
 
-function renderWhoGallery() {
-  if (teamScreenOpen) renderTeamScreenList();
-}
+
 
 function renderServices() {
   const container = document.getElementById("services-list");
@@ -1983,58 +1850,136 @@ function renderSiteFooter() {
     c.logoImage
   );
 
+  BuildProFooter.sync(document.querySelector("body > footer"));
   refreshLucideIcons();
 }
 
 function getFooterContactDetails(c, d) {
-  const infoText = (c.contactInfoText || d.contactInfoText || "").trim();
-  let addressLines = [];
+  const footerAddress = (c.contactFooterAddress || d.contactFooterAddress || "").trim();
+  const footerPhone = (c.contactFooterPhone || d.contactFooterPhone || "").trim();
+  const footerEmail = (c.contactFooterEmail || d.contactFooterEmail || "").trim();
+
+  if (footerAddress || footerPhone || footerEmail) {
+    let addressLines = [];
+    if (footerAddress) {
+      addressLines = footerAddress.includes("\n")
+        ? footerAddress.split("\n").map((line) => line.trim()).filter(Boolean)
+        : [footerAddress];
+    }
+    return {
+      addressHtml: formatFooterAddressHtml(addressLines),
+      email: footerEmail,
+      phone: footerPhone
+    };
+  }
+
+  const parsed = parseContactInfoText(c.contactInfoText || d.contactInfoText || "");
+  return {
+    addressHtml: formatFooterAddressHtml(parsed.addressLines),
+    email: parsed.email,
+    phone: parsed.phone.split(/\s*\/\s*/)[0].trim()
+  };
+}
+
+function parseContactInfoText(infoText) {
+  const text = String(infoText || "").trim();
+  const addressLines = [];
   let email = "";
   let phone = "";
 
-  if (infoText) {
-    let pastAddress = false;
-    for (const line of infoText.split("\n")) {
-      const trimmed = line.trim();
-      if (!trimmed) continue;
-
-      const emailMatch = trimmed.match(/^Email:\s*(.+)$/i);
-      const phoneMatch = trimmed.match(/^Telefon:\s*(.+)$/i);
-      if (emailMatch) {
-        pastAddress = true;
-        email = emailMatch[1].trim();
-        continue;
-      }
-      if (phoneMatch) {
-        pastAddress = true;
-        phone = phoneMatch[1].split(/\s*\/\s*/)[0].trim();
-        continue;
-      }
-      if (/^(Fax|Urmă|Urmare)/i.test(trimmed)) {
-        pastAddress = true;
-        continue;
-      }
-      if (!pastAddress) addressLines.push(trimmed);
-    }
+  if (!text) {
+    return { addressLines, email, phone, address: "" };
   }
 
-  if (!email) email = (c.contactFooterEmail || d.contactFooterEmail || "").trim();
-  if (!phone) phone = (c.contactFooterPhone || d.contactFooterPhone || "").trim();
+  let pastAddress = false;
+  for (const line of text.split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
 
-  if (!addressLines.length) {
-    const fallbackAddress = (c.contactFooterAddress || d.contactFooterAddress || "").trim();
-    if (fallbackAddress) {
-      addressLines = fallbackAddress.includes("\n")
-        ? fallbackAddress.split("\n").map((line) => line.trim()).filter(Boolean)
-        : [fallbackAddress];
+    const emailMatch = trimmed.match(/^Email:\s*(.+)$/i);
+    const phoneMatch = trimmed.match(/^(?:Telefon|Phone):\s*(.+)$/i);
+    if (emailMatch) {
+      pastAddress = true;
+      email = emailMatch[1].trim();
+      continue;
     }
+    if (phoneMatch) {
+      pastAddress = true;
+      phone = phoneMatch[1].trim();
+      continue;
+    }
+    if (/^(Fax|Urmă|Urmare)/i.test(trimmed)) {
+      pastAddress = true;
+      continue;
+    }
+    if (!pastAddress) addressLines.push(trimmed);
   }
 
   return {
-    addressHtml: formatFooterAddressHtml(addressLines),
+    addressLines,
     email,
-    phone
+    phone,
+    address: addressLines.join("\n")
   };
+}
+
+function updateContactInfoTextFields(existingText, { address, phone, email }) {
+  const lines = String(existingText || "").split("\n");
+  const result = [];
+  let i = 0;
+
+  while (i < lines.length) {
+    const trimmed = lines[i].trim();
+    if (!trimmed) {
+      i++;
+      break;
+    }
+    if (/^(Email|Telefon|Phone|Fax|Urmă|Urmare)/i.test(trimmed)) break;
+    i++;
+  }
+
+  if (address) {
+    address.split("\n").forEach((line) => {
+      const t = line.trim();
+      if (t) result.push(t);
+    });
+    result.push("");
+  }
+
+  let emailDone = false;
+  let phoneDone = false;
+
+  for (; i < lines.length; i++) {
+    const trimmed = lines[i].trim();
+    if (/^Email:/i.test(trimmed)) {
+      if (email) {
+        result.push(`Email: ${email}`);
+        emailDone = true;
+      }
+      continue;
+    }
+    if (/^(?:Telefon|Phone):/i.test(trimmed)) {
+      if (phone) {
+        result.push(`Telefon: ${phone}`);
+        phoneDone = true;
+      }
+      continue;
+    }
+    result.push(lines[i]);
+  }
+
+  if (email && !emailDone) {
+    const phoneIdx = result.findIndex((line) => /^(?:Telefon|Phone):/i.test(line.trim()));
+    const insertAt = phoneIdx >= 0 ? phoneIdx : result.length;
+    if (insertAt > 0 && result[insertAt - 1] !== "") result.splice(insertAt, 0, "");
+    result.splice(insertAt, 0, `Email: ${email}`);
+  }
+  if (phone && !phoneDone) {
+    if (result.length && result[result.length - 1] !== "") result.push("");
+    result.push(`Telefon: ${phone}`);
+  }
+
+  return result.join("\n").replace(/\n{3,}/g, "\n\n").trim();
 }
 
 function formatFooterAddressHtml(addressInput) {
@@ -2319,11 +2264,7 @@ function projectSlides(project) {
   return [{ type: "image", url: project.cover }, ...project.media].filter((s) => s && s.url);
 }
 
-function personSlides(person) {
-  return [person.cover, ...person.media]
-    .filter(Boolean)
-    .map((url) => ({ type: "image", url }));
-}
+
 
 function fillProjectCoverForm(item) {
   document.getElementById("project-edit-cover-url").value = item.cover;
@@ -2469,127 +2410,15 @@ function closeProjectGallery() {
   activeProjectId = null;
 }
 
-function openPersonDetails(personId) {
-  const person = siteData.whoPeople.find((p) => p.id === personId);
-  if (!person) return;
-  activePersonId = personId;
 
-  document.getElementById("person-title").textContent = person.name;
 
-  const roleEl = document.getElementById("person-role");
-  if (roleEl) roleEl.textContent = person.role || "";
 
-  document.getElementById("person-bio").textContent = person.bio;
 
-  const socialsEl = document.getElementById("person-socials");
-  if (socialsEl) {
-    socialsEl.innerHTML = "";
-    if (person.linkedin) {
-      const a = document.createElement("a");
-      a.href = person.linkedin; a.target = "_blank"; a.rel = "noopener noreferrer";
-      a.className = "team-card-social-link"; a.textContent = "LinkedIn";
-      socialsEl.appendChild(a);
-    }
-    if (person.github) {
-      const a = document.createElement("a");
-      a.href = person.github; a.target = "_blank"; a.rel = "noopener noreferrer";
-      a.className = "team-card-social-link"; a.textContent = "GitHub";
-      socialsEl.appendChild(a);
-    }
-    if (person.email) {
-      const a = document.createElement("a");
-      a.href = `mailto:${person.email}`;
-      a.className = "team-card-social-link"; a.textContent = "Email";
-      socialsEl.appendChild(a);
-    }
-  }
 
-  const slides = personSlides(person);
-  renderMediaCarousel(
-    document.getElementById("person-media"),
-    slides.length ? slides : [{ type: "image", url: PLACEHOLDER }],
-    { alt: person.name }
-  );
 
-  if (isAdmin()) fillPersonAdminForm(person);
 
-  personScreen.classList.remove("hidden-screen");
-  personScreen.setAttribute("aria-hidden", "false");
-}
 
-function fillPersonAdminForm(person) {
-  document.getElementById("person-name-input").value = person.name;
-  document.getElementById("person-role-input").value = person.role || "";
-  document.getElementById("person-bio-input").value = person.bio;
-  document.getElementById("person-linkedin-input").value = person.linkedin || "";
-  document.getElementById("person-github-input").value = person.github || "";
-  document.getElementById("person-email-input").value = person.email || "";
-  document.getElementById("person-cover-url").value = person.cover;
-  document.getElementById("person-cover-file").value = "";
-  document.getElementById("person-media-url").value = "";
-  document.getElementById("person-media-file").value = "";
-  setImageEditorPreview("person-cover-preview", person.cover);
-  resetAddMediaPreview("person-new-media-preview", "person-media-url", "person-media-file");
 
-  const list = document.getElementById("person-media-admin-list");
-  list.innerHTML = "";
-
-  person.media.forEach((url, idx) => {
-    list.appendChild(
-      createGalleryMediaRow({
-        label: `Photo ${idx + 1}`,
-        url,
-        type: "image",
-        onUpdate: ({ url: newUrl }) => {
-          if (!newUrl) return;
-          person.media[idx] = newUrl;
-          persistAndRender();
-          openPersonDetails(person.id);
-        },
-        onRemove: () => {
-          if (!confirm("Remove this photo?")) return;
-          person.media.splice(idx, 1);
-          persistAndRender();
-          openPersonDetails(person.id);
-        }
-      })
-    );
-  });
-}
-
-async function savePersonItem() {
-  if (!isAdmin() || !activePersonId) return;
-  const person = siteData.whoPeople.find((p) => p.id === activePersonId);
-  if (!person) return;
-
-  person.name = document.getElementById("person-name-input").value.trim() || person.name;
-  person.role = document.getElementById("person-role-input").value.trim();
-  person.bio = document.getElementById("person-bio-input").value.trim();
-  person.linkedin = document.getElementById("person-linkedin-input").value.trim();
-  person.github = document.getElementById("person-github-input").value.trim();
-  person.email = document.getElementById("person-email-input").value.trim();
-
-  const cover = await resolveUrlOrFile("person-cover-url", "person-cover-file");
-  if (cover) person.cover = cover;
-
-  const extra = await resolveUrlOrFile("person-media-url", "person-media-file");
-  if (extra) person.media.push(extra);
-
-  persistAndRender();
-  openPersonDetails(person.id);
-  toast("Person saved.");
-}
-
-function deletePersonItem() {
-  if (!isAdmin() || !activePersonId) return;
-  deletePersonById(activePersonId);
-}
-
-function closePersonDetails() {
-  personScreen.classList.add("hidden-screen");
-  personScreen.setAttribute("aria-hidden", "true");
-  activePersonId = null;
-}
 
 async function resolveUrlOrFile(urlId, fileId) {
   const urlInput = document.getElementById(urlId);
@@ -2836,7 +2665,7 @@ function formatContactInfoLine(line) {
     return `Email: <a href="mailto:${escapeAttr(email)}">${escapeHtml(email)}</a>`;
   }
 
-  const phoneMatch = trimmed.match(/^Telefon:\s*(.+)$/i);
+  const phoneMatch = trimmed.match(/^(?:Telefon|Phone):\s*(.+)$/i);
   if (phoneMatch) {
     const parts = phoneMatch[1].split(/\s*\/\s*/).filter(Boolean);
     const linked = parts
@@ -2901,6 +2730,7 @@ function loadData() {
   if (!raw) return structuredClone(defaultData);
   try {
     const parsed = JSON.parse(raw);
+    parsed.content = BuildProFooter.normalize(parsed.content);
     const merged = {
       ...structuredClone(defaultData),
       ...parsed,
