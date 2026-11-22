@@ -560,7 +560,6 @@ function isAdmin() {
 
 function setupMenu() {
   if (!menuToggle || !nav) return;
-  menuToggle.addEventListener("click", () => nav.classList.toggle("active"));
   nav.addEventListener("click", (e) => {
     const projectLink = e.target.closest("[data-nav-project]");
     if (projectLink) {
